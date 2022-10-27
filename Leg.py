@@ -3,4 +3,4 @@ class Leg:
         self.ID = ID
         self.leg_geometry = leg_geometry
         self.num_legs = num_legs
-        self.legs_collection = legs_collection        
+        self.lane_collection = lane_collection        
