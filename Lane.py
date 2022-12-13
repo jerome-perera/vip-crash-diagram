@@ -4,3 +4,4 @@ class Lane:
         self.lane_width = lane_width
         self.intersection_edge_point = intersection_edge_point
         self.lane_type = lane_type
+        print('here')
