@@ -7,7 +7,7 @@ import matplotlib.image as mpimg
 import matplotlib.cm as cm
 
 # Grouping Approach
-class Symbol2:
+class Symbol:
     def __init__(self, v1direction, v1manuever, v2direction, v2manuever, stationary_present, stationary_direction):
         self.v1manuever = v1manuever
         self.v2manuever = v2manuever
