@@ -12,23 +12,6 @@ class Trajectory:
         #self.receiving_lane = Lane()
         self.trajection_geometry = trajection_geometry
 
-    """
-    def compute_trajectory(self, departing_lane, receiving_lane):
-        arr = np.zeros((2, 3))
-        (x1, y1) = departing_lane.intersection_edge_point
-        (x2, y2) = receiving_lane.intersection_edge_point
-        L = math.dist(departing_lane.intersection_edge_point, receiving_lane.intersection_edge_point)
-        c1 = (L/2) * U_s + S
-        c2 = -1 * (L/2) * U_e + E
-
-        arr = np.asfortranarray([
-            [x1, c1, x2]
-            [y1, c2, y2]
-        ])
-        curve = bezier.Curve(arr, degree=2)
-        return arr
-    """
-
     def compute_trajectory(self, point1, point2, point3, point4):
         d1 = math.dist(point1, point2)
         d2 = math.dist(point3, point4)
