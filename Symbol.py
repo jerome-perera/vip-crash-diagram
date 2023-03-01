@@ -5,699 +5,155 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib.cm as cm
-from scipy.interpolate import make_interp_spline
-import Conflict
-import Trajectory
-import numpy as np
-import math
 
-class Symbol:
-    # Case by Case Approach
-    def __init__ (v1Manuever, v2Manuever, v1Direction, v2Direction, xCord, yCord):
-        this.v1Manuever = v1Manuever
-        this.v2Manuever = v2Manuever
-        this.v1Direction = v1Direction
-        this.v2Direction = v2Direction
-        this.xCord = conflict_point_location[0]
-        this.yCord = conflict_point_location[1]
-
-    # Setting up graph itself.
-    plt.rcParams["figure.figsize"] = [3.5, 3.5]
-    plt.rcParams["figure.autolayout"] = True
-    fig = plt.figure()
-    ax = fig.add_subplot()
-    circle1 = plt.Circle((0.2, 0.2), radius=0.5, color='grey')
-    ax.add_patch(circle1)
-
-    # Common Crashes related to Two Trajectories
-    # Manuevers: 0 = Straight, 90 = Left Turn, -90 = Right Turn
-    # Direction: North, South, East, West
-    if v1Manuever == 0 and v2Manuever == 0 and v1Direction == "North" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0,0],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([0.3,0.5],[0.35,0.35], linewidth = '15', color = 'red')
-        plt.arrow(0.3, 0.35, -0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
+# Grouping Approach
+class Symbol2:
+    def __init__(self, v1direction, v1manuever, v2direction, v2manuever, stationary_present, stationary_direction):
+        self.v1manuever = v1manuever
+        self.v2manuever = v2manuever
+        self.v1direction = v1direction
+        self.v2direction = v2direction
+        self.v1 = (v1direction, v1manuever)
+        self.v2 = (v2direction, v2manuever)
+        # self.side_swipe = side_swipe
+        self.stationary_present = stationary_present
+        self.stationary_direction = stationary_direction
+        
+        self.counter = 1
+        self.adjust_v2 = 0
+        
+    def plot(self):
+        # Setting up graph itself.
+        plt.rcParams["figure.figsize"] = [3.5, 3.5]
+        plt.rcParams["figure.autolayout"] = True
+        fig = plt.figure()
+        ax = fig.add_subplot()
+        circle1 = plt.Circle((0.2, 0.2), radius=0.5, color='grey')
+        ax.add_patch(circle1)
         plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-
-    if v1Manuever == 0 and v2Manuever == 0 and v1Direction == "North" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([-0.1,0.1],[0.35,0.35], linewidth = '15', color = 'red')
-        plt.arrow(0.1, 0.35, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-
-    if v1Manuever == 0 and v2Manuever == 0 and v1Direction == "South" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([-0.1,0.1],[0.35,0.35], linewidth = '15', color = 'red')
-        plt.arrow(0.1, 0.35, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.rotate(180)
-
-    if v1Manuever == 0 and v2Manuever == 0 and v1Direction == "South" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0.2,0.4], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, -0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([-0.1,0.1],[-0.05,-0.05], linewidth = '15', color = 'red')
-        plt.arrow(0.1, -0.05, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-
-    if v1Manuever == 0 and v2Manuever == -90 and v1Direction == "North" and v2Direction == "North":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([0, 0.3, 0.3,0.3])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)      
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.12, .3, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-
-    if v1Manuever == 0 and v2Manuever == -90 and v1Direction == "North" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0,0],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([0.245,0.25, 0.4,0.45,0.5,0.55])
-        y = np.array([0.355,0.34, 0.1,0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.25, .37, 0, 0.005, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-
-    if v1Manuever == 0 and v2Manuever == -90 and v1Direction == "South" and v2Direction == "South":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([0, 0.3, 0.3,0.3])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)      
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.12, .3, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.rotate(180)
-
-    if v1Manuever == 0 and v2Manuever == -90 and v1Direction == "South" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0,0],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([0.245,0.25, 0.4,0.45,0.5,0.55])
-        y = np.array([0.355,0.34, 0.1,0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.25, .37, 0, 0.005, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.rotate(180)
-    
-    if v1Manuever == 0 and v2Manuever == -90 and v1Direction == "West" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([0, 0.3, 0.3,0.3])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)      
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.12, .3, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.rotate(90)
-
-    if v1Manuever == 0 and v2Manuever == -90 and v1Direction == "East" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([0, 0.3, 0.3,0.3])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)      
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.12, .3, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.rotate(270)
-
-    if v1Manuever == 0 and v2Manuever == 90 and v1Direction == "North" and v2Direction == "North":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([0, 0.3, 0.3,0.3])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)      
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.12, .3, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-
-    if v1Manuever == 0 and v2Manuever == 90 and v1Direction == "North" and v2Direction == "South":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.33,0.33],[0.35,0.55], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.33, .32, 0, -0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([-.1, 0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.07, .1, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(180)
-
-    if v1Manuever == 0 and v2Manuever == 90 and v1Direction == "North" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([-0.2, -0.05, 0.0025-0.05,0])
-        y = np.array([0, 0.2, 0.2,0.2])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot([0.44,0.64],[0.2,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.44, .2, -0.000000001, 0, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.2, -0.05, 0.0025-0.05,0])
-        y = np.array([0, 0.2, 0.2,0.2])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0, .2, 0.000001, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(90)
-
-    if v1Manuever == 0 and v2Manuever == 90 and v1Direction == "North" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0,0],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([0.245,0.25, 0.4,0.45,0.5,0.55])
-        y = np.array([0.355,0.34, 0.1,0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.25, .37, 0, 0.005, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-
-    if v1Manuever == 0 and v2Manuever == 90 and v1Direction == "South" and v2Direction == "South":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([0, 0.3, 0.3,0.3])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)      
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.12, .3, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(180)
-
-    if v1Manuever == 0 and v2Manuever == 90 and v1Direction == "South" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0,0],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([0.245,0.25, 0.4,0.45,0.5,0.55])
-        y = np.array([0.355,0.34, 0.1,0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.25, .37, 0, 0.005, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(180)
-
-    if v1Manuever == 0 and v2Manuever == 90 and v1Direction == "South" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([-0.2, -0.05, 0.0025-0.05,0])
-        y = np.array([0, 0.2, 0.2,0.2])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot([0.44,0.64],[0.2,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.44, .2, -0.000000001, 0, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.2, -0.05, 0.0025-0.05,0])
-        y = np.array([0, 0.2, 0.2,0.2])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0, .2, 0.000001, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(270)
-
-    if v1Manuever == 0 and v2Manuever == 90 and v1Direction == "West" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([0, 0.3, 0.3,0.3])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)      
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.12, .3, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(90)
-
-    if v1Manuever == 0 and v2Manuever == 90 and v1Direction == "West" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.33,0.33],[0.35,0.55], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.33, .32, 0, -0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([-.1, 0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.07, .1, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(270)
-
-    if v1Manuever == 0 and v2Manuever == 90 and v1Direction == "East" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        plt.plot([0.4,0.4],[0,0.2], linewidth = '15', color = 'darkorange')
-        plt.arrow(0.4, .2, 0, 0.005, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([0, 0.3, 0.3,0.3])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)      
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0.12, .3, 0.005, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(270)
-
-    if v1Manuever == -90 and v2Manuever == 0 and v1Direction == "North" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([0.245,0.25, 0.4,0.45,0.5,0.55])
-        y = np.array([0.355,0.34, 0.1,0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'darkOrange')
-        plt.arrow(0.25, .37, 0, 0.005, width = 0.05, color = 'darkOrange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([0,0],[0,0.2], linewidth = '15', color = 'red')
-        plt.arrow(0, .2, 0, 0.005, width = 0.05, color = 'red')
-
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.rotate(270)
-
-    if v1Manuever == -90 and v2Manuever == 0 and v1Direction == "South" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([0.245,0.25, 0.4,0.45,0.5,0.55])
-        y = np.array([0.355,0.34, 0.1,0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'darkOrange')
-        plt.arrow(0.25, .37, 0, 0.005, width = 0.05, color = 'darkOrange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([0,0],[0,0.2], linewidth = '15', color = 'red')
-        plt.arrow(0, .2, 0, 0.005, width = 0.05, color = 'red')
-
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.rotate(90)
-
-    if v1Manuever == 90 and v2Manuever == 0 and v1Direction == "North" and v2Direction == "South":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([-.1, 0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'darkOrange')
-        plt.arrow(0.07, .1, 0.005, 0, width = 0.05, color = 'darkOrange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([0.33,0.33],[0.35,0.55], linewidth = '15', color = 'red')
-        plt.arrow(0.33, .32, 0, -0.005, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-
-    if v1Manuever == 90 and v2Manuever == 0 and v1Direction == "North" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([0.245,0.25, 0.4,0.45,0.5,0.55])
-        y = np.array([0.355,0.34, 0.1,0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'darkOrange')
-        plt.arrow(0.25, .37, 0, 0.005, width = 0.05, color = 'darkOrange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([0,0],[0,0.2], linewidth = '15', color = 'red')
-        plt.arrow(0, .2, 0, 0.005, width = 0.05, color = 'red')
-
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.rotate(270)
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-
-    if v1Manuever == 90 and v2Manuever == 0 and v1Direction == "North" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([-0.2, -0.05, 0.0025-0.05,0])
-        y = np.array([0, 0.2, 0.2,0.2])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'darkorange')
-        plt.arrow(0, .2, 0.000001, 0, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([0.44,0.64],[0.2,0.2], linewidth = '15', color = 'red')
-        plt.arrow(0.44, .2, -0.000000001, 0, width = 0.05, color = 'red')
-
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-
-    if v1Manuever == 90 and v2Manuever == 0 and v1Direction == "South" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([-0.2, -0.05, 0.0025-0.05,0])
-        y = np.array([0, 0.2, 0.2,0.2])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'darkorange')
-        plt.arrow(0, .2, 0.000001, 0, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([0.44,0.64],[0.2,0.2], linewidth = '15', color = 'red')
-        plt.arrow(0.44, .2, -0.000000001, 0, width = 0.05, color = 'red')
-
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(180)
-
-    if v1Manuever == 90 and v2Manuever == 0 and v1Direction == "South" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([0.245,0.25, 0.4,0.45,0.5,0.55])
-        y = np.array([0.355,0.34, 0.1,0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'darkOrange')
-        plt.arrow(0.25, .37, 0, 0.005, width = 0.05, color = 'darkOrange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([0,0],[0,0.2], linewidth = '15', color = 'red')
-        plt.arrow(0, .2, 0, 0.005, width = 0.05, color = 'red')
-
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.rotate(90)
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-
-    if v1Manuever == 90 and v2Manuever == 0 and v1Direction == "West" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([-0.1, 0.05, 0.1,0.12])
-        y = np.array([-.1, 0.1, 0.1,0.1])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'darkOrange')
-        plt.arrow(0.07, .1, 0.005, 0, width = 0.05, color = 'darkOrange')
-
-        # Drawing Vehicle 2 arrow.
-        plt.plot([0.33,0.33],[0.35,0.55], linewidth = '15', color = 'red')
-        plt.arrow(0.33, .32, 0, -0.005, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(90)
-
-    if v1Manuever == 90 and v2Manuever == 90 and v1Direction == "North" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([-0.2, -0.05, 0.0025-0.05,0])
-        y = np.array([0, 0.2, 0.2,0.2])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'darkorange')
-        plt.arrow(0, .2, 0.000001, 0, width = 0.05, color = 'darkorange')
+        
+        # Plot pedestrian or bicycle arrowhead
+        if (self.stationary_present == "Bicycle" or self.stationary_present == "Pedestrian"):
+            if (self.stationary_direction == "North"):
+                plt.arrow(0.2, 0, 0, 0.001, head_width=0.35, head_length=0.35, color = 'lightblue')
+            elif (self.stationary_direction == "South"):
+                plt.arrow(0.2, 0.3, 0, -0.001, head_width=0.35, head_length=0.35, color = 'lightblue')
+            elif (self.stationary_direction == "West"):
+                    plt.arrow(0.3, 0.2, -0.001, 0, head_width=0.35, head_length=0.35, color = 'lightblue')
+            elif (self.stationary_direction == "East"):
+                plt.arrow(0.1, 0.2, 0.001, 0, head_width=0.35, head_length=0.35, color = 'lightblue')
+        # Plot pedestrian or bicycle arrowhead
+        if (self.stationary_present == "Pedestrian"):
+            # Draw the body
+            ax.plot([0.2, 0.2], [0.2, 0.15], linewidth=3, color='black')
+            # Draw the legs
+            ax.plot([0.2, 0.17], [0.15, 0.05], linewidth=3, color='black')
+            ax.plot([0.2, 0.23], [0.15, 0.05], linewidth=3, color='black')
+            # Draw the arms
+            ax.plot([0.2, 0.15], [0.2, 0.23], linewidth=3, color='black')
+            ax.plot([0.2, 0.25], [0.2, 0.23], linewidth=3, color='black')
+            # Draw the head
+            ax.add_patch(plt.Circle((0.2, 0.25), radius=0.03, color='black'))
+        elif (self.stationary_present == "Bicycle"):
+            # Draw bicycle
+            wheel1 = plt.Circle((0.15, 0.15), radius=0.02, color='black')
+            wheel2 = plt.Circle((0.25, 0.15), radius=0.02, color='black')
+            handle1 = plt.Rectangle((0.1, 0.2), 0.1, 0.01, color='black')
+            handle2 = plt.Rectangle((0.23, 0.2), 0.05, 0.005, color='black')
+            seat = plt.Rectangle((0.18, 0.2), 0.03, 0.015, color='black')
+            pedal1 = plt.Rectangle((0.14, 0.13), 0.02, 0.03, color='black')
+            pedal2 = plt.Rectangle((0.24, 0.13), 0.02, 0.03, color='black')
+            chain = plt.Line2D([0.16, 0.24], [0.13, 0.13], color='black')
+            ax.add_patch(wheel1)
+            ax.add_patch(wheel2)
+            ax.add_patch(handle1)
+            ax.add_patch(handle2)
+            ax.add_patch(seat)
+            ax.add_patch(pedal1)
+            ax.add_patch(pedal2)
+            ax.add_line(chain)
+        # Plot Parked Vehicle
+        elif (self.stationary_present == "Parked Vehicle"):
+            if (self.stationary_direction == "North"):
+                plt.arrow(0.2, 0.1, 0, 0.001, width = 0.05, color = 'lightblue')
+            elif (self.stationary_direction == "South"):
+                plt.arrow(0.2, 0.3, 0, -0.001, width = 0.05, color = 'lightblue')
+            elif (self.stationary_direction == "West"):
+                plt.arrow(0.3, 0.2, -0.001, 0, width = 0.05, color = 'lightblue')
+            elif (self.stationary_direction == "East"):
+                plt.arrow(0.1, 0.2, 0.001, 0, width = 0.05, color = 'lightblue')
             
-        # Drawing Vehicle 2 arrow.
-        z = np.array([0.02, 0.05, 0.15, 0.17, 0.2, 0.3,0.301])
-        w = np.array([0.55,0.5455, 0.45, 0.449, 0.43, 0.35,0.35])
-        Z_W_Spline = make_interp_spline(z, w)
-        Z_ = np.linspace(z.min(), z.max(), 1000)
-        W_ = Z_W_Spline(Z_)
-        plt.plot(Z_,W_, linewidth = '15', color = 'red')
-        plt.arrow(0.301, .37, 0, -0.000001, width = 0.05, color = 'red')
+        # Defining how to plot an Vehicles on the graph.
+        def v_arrow(v, arrow_color):
+            straight = "Straight"
+            right = "Turning Right"
+            left = "Turning Left"
+            if self.counter %2 == 0:
+                if ((self.v1 == self.v2) or
+                    (self.v1 == ("North",right) and self.v2 == ("East",straight)) or (self.v2 == ("North",right) and self.v1 == ("East",straight)) or 
+                    (self.v1 == ("South",right) and self.v2 == ("West",straight)) or (self.v2 == ("South",right) and self.v1 == ("West",straight)) or
+                   (self.v1 == ("West",right) and self.v2 == ("North",straight)) or (self.v2 == ("West",right) and self.v1 == ("North",straight)) or
+                   (self.v1 == ("East",right) and self.v2 == ("South",straight)) or (self.v2 == ("East",right) and self.v1 == ("South",straight)) or
 
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
+                    (self.v1 == ("North",left) and self.v2 == ("West",straight)) or (self.v2 == ("North",left) and self.v1 == ("West",straight)) or
+                    (self.v1 == ("South",left) and self.v2 == ("East",straight)) or (self.v2 == ("South",left) and self.v1 == ("East",straight)) or
+                    (self.v1 == ("West",left) and self.v2 == ("South",straight)) or (self.v2 == ("West",left) and self.v1 == ("South",straight)) or
+                    (self.v1 == ("East",left) and self.v2 == ("North",straight)) or (self.v2 == ("East",left) and self.v1 == ("North",straight)) or 
+                    
+                    (self.v1 == ("North",left) and self.v2 == ("South",right)) or (self.v2 == ("North",left) and self.v1 == ("South",right)) or
+                    (self.v1 == ("South",left) and self.v2 == ("North",right)) or (self.v2 == ("South",left) and self.v1 == ("North",right)) or
+                    (self.v1 == ("West",left) and self.v2 == ("East",right)) or (self.v2 == ("West",left) and self.v1 == ("East",right)) or
+                    (self.v1 == ("East",left) and self.v2 == ("West",right)) or (self.v2 == ("East",left) and self.v1 == ("West",right)) 
+                   ):
+                    self.adjust_v2= 0.5
+                else:
+                    self.adjust_v2 = 0
+            # Straight Vector (aka Through Turn Vector)
+            if (v == ("North", straight)):
+                plt.arrow(0.2, -.3 + self.adjust_v2, 0, 0.25, width = 0.05, color = arrow_color)
+            if (v == ("South", straight)):
+                plt.arrow(0.2, .7 - self.adjust_v2, 0, -0.25, width = 0.05, color = arrow_color)
+            if (v == ("West", straight)):
+                plt.arrow(0.7 - self.adjust_v2, 0.2, -0.25, 0, width = 0.05, color = arrow_color)
+            if (v == ("East", straight)):
+                plt.arrow(-0.3 + self.adjust_v2, 0.2, 0.25, 0, width = 0.05, color = arrow_color)
 
-    if v1Manuever == 90 and v2Manuever == 90 and v1Direction == "North" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        z = np.array([0.02, 0.05, 0.15, 0.17, 0.2, 0.3,0.301])
-        w = np.array([0.55,0.5455, 0.45, 0.449, 0.43, 0.35,0.35])
-        Z_W_Spline = make_interp_spline(z, w)
-        Z_ = np.linspace(z.min(), z.max(), 1000)
-        W_ = Z_W_Spline(Z_)
-        plt.plot(Z_,W_, linewidth = '15', color = 'darkorange')
-        plt.arrow(0.301, .37, 0, -0.000001, width = 0.05, color = 'darkorange')
+            # Turning Right Vector
+            if (v == ("North", right)):
+                plt.plot([-0.2+self.adjust_v2,-0.2+self.adjust_v2],[0,0.2], linewidth = '10', color = arrow_color)
+                plt.arrow(-0.2+self.adjust_v2, 0.2, 0.15, 0, width = 0.05, color = arrow_color)
+            if (v == ("South", right)):
+                plt.plot([0.6 - self.adjust_v2,.6 - self.adjust_v2],[0.2,0.4], linewidth = '10', color = arrow_color)
+                plt.arrow(0.6 - self.adjust_v2, 0.2, -0.15, 0, width = 0.05, color = arrow_color)
+            if (v == ("West", right)):
+                plt.plot([0.2,0.4], [-0.2+self.adjust_v2,-0.2+self.adjust_v2], linewidth = '10', color = arrow_color)
+                plt.arrow(0.2,-0.2+self.adjust_v2, 0, 0.15, width = 0.05, color = arrow_color)
+            if (v == ("East", right)):
+                plt.plot([0,0.2],[0.6 - self.adjust_v2,.6 - self.adjust_v2], linewidth = '10', color = arrow_color)
+                plt.arrow(0.2, 0.6 - self.adjust_v2, 0, -0.15, width = 0.05, color = arrow_color)
+                
+            # Turning Left Vector
+            if (v == ("North", left)):
+                plt.plot([0.6 - self.adjust_v2,.6 - self.adjust_v2],[0,0.2], linewidth = '10', color = arrow_color)
+                plt.arrow(0.6 - self.adjust_v2, 0.2, -0.15, 0, width = 0.05, color = arrow_color)
+            if (v == ("South", left)):
+                plt.plot([-0.2+self.adjust_v2,-0.2+self.adjust_v2],[0.2,0.4], linewidth = '10', color = arrow_color)
+                plt.arrow(-0.2+self.adjust_v2, 0.2, 0.15, 0, width = 0.05, color = arrow_color)
+            if (v == ("West", left)):
+                plt.plot([0.2,0.4],[0.6 - self.adjust_v2,.6 - self.adjust_v2], linewidth = '10', color = arrow_color)
+                plt.arrow(0.2, 0.6 - self.adjust_v2, 0, -0.15, width = 0.05, color = arrow_color)
+            if (v == ("East", left)):
+                plt.plot([0.,0.2], [-0.2+self.adjust_v2,-0.2+self.adjust_v2], linewidth = '10', color = arrow_color)
+                plt.arrow(0.2,-0.2+self.adjust_v2, 0, 0.15, width = 0.05, color = arrow_color)
+                # v1 = v2
+            # Special Cases
+            self.counter += 1
+        # Plotting Vehicles
+        v_arrow(self.v1, 'red')
+        v_arrow(self.v2,'darkorange')
+        
+# Input
+symbol = Symbol2("North", "Turning Left", "South", "Turning Right", "Parked ", "East")
+symbol.plot()
 
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.2, -0.05, 0.0025-0.05,0])
-        y = np.array([0, 0.2, 0.2,0.2])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0, .2, 0.000001, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(270)
-
-    if v1Manuever == 90 and v2Manuever == 90 and v1Direction == "South" and v2Direction == "West":
-        # Drawing Vehicle 1 arrow.
-        z = np.array([0.02, 0.05, 0.15, 0.17, 0.2, 0.3,0.301])
-        w = np.array([0.55,0.5455, 0.45, 0.449, 0.43, 0.35,0.35])
-        Z_W_Spline = make_interp_spline(z, w)
-        Z_ = np.linspace(z.min(), z.max(), 1000)
-        W_ = Z_W_Spline(Z_)
-        plt.plot(Z_,W_, linewidth = '15', color = 'darkorange')
-        plt.arrow(0.301, .37, 0, -0.000001, width = 0.05, color = 'darkorange')
-
-        # Drawing Vehicle 2 arrow.
-        x = np.array([-0.2, -0.05, 0.0025-0.05,0])
-        y = np.array([0, 0.2, 0.2,0.2])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'red')
-        plt.arrow(0, .2, 0.000001, 0, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(90)
-
-    if v1Manuever == 90 and v2Manuever == 90 and v1Direction == "South" and v2Direction == "East":
-        # Drawing Vehicle 1 arrow.
-        x = np.array([-0.2, -0.05, 0.0025-0.05,0])
-        y = np.array([0, 0.2, 0.2,0.2])
-        X_Y_Spline = make_interp_spline(x, y)
-        X_ = np.linspace(x.min(), x.max(), 1000)
-        Y_ = X_Y_Spline(X_)
-        plt.plot(X_,Y_, linewidth = '15', color = 'darkorange')
-        plt.arrow(0, .2, 0.000001, 0, width = 0.05, color = 'darkorange')
-            
-        # Drawing Vehicle 2 arrow.
-        z = np.array([0.02, 0.05, 0.15, 0.17, 0.2, 0.3,0.301])
-        w = np.array([0.55,0.5455, 0.45, 0.449, 0.43, 0.35,0.35])
-        Z_W_Spline = make_interp_spline(z, w)
-        Z_ = np.linspace(z.min(), z.max(), 1000)
-        W_ = Z_W_Spline(Z_)
-        plt.plot(Z_,W_, linewidth = '15', color = 'red')
-        plt.arrow(0.301, .37, 0, -0.000001, width = 0.05, color = 'red')
-
-        # Remove plot details and then save produced as an image to then rotate if necessary.
-        plt.axis("off")
-        fig.savefig('plotcircles.png')
-        original_image = Image.open("./plotcircles.png")
-        original_image = original_image.transpose(method=Image.FLIP_LEFT_RIGHT)
-        original_image = original_image.rotate(180)
-
-    # Produce image
-    original_image.show()
 
