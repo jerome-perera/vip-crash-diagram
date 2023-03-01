@@ -153,7 +153,7 @@ class Symbol:
         v_arrow(self.v2,'darkorange')
         
 # Input
-symbol = Symbol2("North", "Turning Left", "South", "Turning Right", "Parked ", "East")
+symbol = Symbol("North", "Turning Left", "South", "Turning Right", "Parked ", "East")
 symbol.plot()
 
 
