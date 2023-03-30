@@ -12,44 +12,44 @@ class Intersection:
 
     def computeSection(self, laneEdgePoint, orientation, lane_width):
         if (orientation == "left"):
-            leg_edge_x = (0, laneEdgePoint[0])
+            leg_edge_x = (-1 * self.center_point_location[0], laneEdgePoint[0])
             leg_edge_y = (laneEdgePoint[1], laneEdgePoint[1])
                 
             lane_stop_x = (laneEdgePoint[0] - 14.5, laneEdgePoint[0] - 14.5)
             lane_stop_y = (laneEdgePoint[1], laneEdgePoint[1] - lane_width)
 
-            lane_edgeleft_x = (0, laneEdgePoint[0])
+            lane_edgeleft_x = (-1 * self.center_point_location[0], laneEdgePoint[0])
             lane_edgeleft_y = (laneEdgePoint[1] + lane_width, laneEdgePoint[1] + lane_width)
             
-            lane_edgeright_x = (0, laneEdgePoint[0])
+            lane_edgeright_x = (-1 * self.center_point_location[0], laneEdgePoint[0])
             lane_edgeright_y = (laneEdgePoint[1] - lane_width, laneEdgePoint[1] - lane_width)
 
-            lane_dividerleft_x = (0, laneEdgePoint[0])
+            lane_dividerleft_x = (-1 * self.center_point_location[0], laneEdgePoint[0])
             lane_dividerleft_y = (laneEdgePoint[1] + (lane_width / 2), laneEdgePoint[1] + (lane_width / 2))
 
-            lane_dividerright_x = (0, laneEdgePoint[0])
+            lane_dividerright_x = (-1 * self.center_point_location[0], laneEdgePoint[0])
             lane_dividerright_y = (laneEdgePoint[1] - (lane_width / 2), laneEdgePoint[1] - (lane_width / 2))
             
             returnArray = [leg_edge_x, leg_edge_y, lane_stop_x, lane_stop_y, lane_edgeleft_x, lane_edgeleft_y, lane_edgeright_x,
                                 lane_edgeright_y, lane_dividerleft_x, lane_dividerleft_y, lane_dividerright_x, lane_dividerright_y]
             return returnArray
         elif (orientation == "right"):
-            leg_edge_x = (laneEdgePoint[0], 2 * self.center_point_location[0])
+            leg_edge_x = (laneEdgePoint[0], self.center_point_location[0])
             leg_edge_y = (laneEdgePoint[1], laneEdgePoint[1])
 
             lane_stop_x = (laneEdgePoint[0] + 14.5, laneEdgePoint[0] + 14.5)
             lane_stop_y = (laneEdgePoint[1], laneEdgePoint[1] + lane_width)
 
-            lane_edgeleft_x = (laneEdgePoint[0], 2 * self.center_point_location[0])
+            lane_edgeleft_x = (laneEdgePoint[0], self.center_point_location[0])
             lane_edgeleft_y = (laneEdgePoint[1] + lane_width, laneEdgePoint[1] + lane_width)
 
-            lane_edgeright_x = (laneEdgePoint[0], 2 * self.center_point_location[0])
+            lane_edgeright_x = (laneEdgePoint[0], self.center_point_location[0])
             lane_edgeright_y = (laneEdgePoint[1] - lane_width, laneEdgePoint[1] - lane_width)
 
-            lane_dividerleft_x = (laneEdgePoint[0], 2 * self.center_point_location[0])
+            lane_dividerleft_x = (laneEdgePoint[0], self.center_point_location[0])
             lane_dividerleft_y = (laneEdgePoint[1] + (lane_width / 2), laneEdgePoint[1] + (lane_width / 2))
 
-            lane_dividerright_x = (laneEdgePoint[0], 2 * self.center_point_location[0])
+            lane_dividerright_x = (laneEdgePoint[0], self.center_point_location[0])
             lane_dividerright_y = (laneEdgePoint[1] - (lane_width / 2),laneEdgePoint[1] - (lane_width / 2))
 
 
@@ -58,43 +58,43 @@ class Intersection:
             return returnArray
         elif (orientation == "top"):
             leg_edge_x = (laneEdgePoint[0], laneEdgePoint[0])
-            leg_edge_y = (laneEdgePoint[1], 2 * self.center_point_location[1])
+            leg_edge_y = (laneEdgePoint[1], self.center_point_location[1])
 
             lane_stop_x = (laneEdgePoint[0] - lane_width, laneEdgePoint[0])
             lane_stop_y = (laneEdgePoint[1] + 14.5, laneEdgePoint[1] + 14.5)
 
             lane_edgeleft_x = (laneEdgePoint[0] - lane_width, laneEdgePoint[0] - lane_width)
-            lane_edgeleft_y = (laneEdgePoint[1], 2 * self.center_point_location[1])
+            lane_edgeleft_y = (laneEdgePoint[1], self.center_point_location[1])
 
             lane_edgeright_x = (laneEdgePoint[0] + lane_width, laneEdgePoint[0] + lane_width)
-            lane_edgeright_y = (laneEdgePoint[1], 2 * self.center_point_location[1])
+            lane_edgeright_y = (laneEdgePoint[1], self.center_point_location[1])
 
             lane_dividerleft_x = (laneEdgePoint[0] - (lane_width / 2), laneEdgePoint[0] - (lane_width / 2))
-            lane_dividerleft_y = (laneEdgePoint[1], 2 * self.center_point_location[1])
+            lane_dividerleft_y = (laneEdgePoint[1], self.center_point_location[1])
 
             lane_dividerright_x = (laneEdgePoint[0] + (lane_width / 2), laneEdgePoint[0] + (lane_width / 2))
-            lane_dividerright_y = (laneEdgePoint[1], 2 * self.center_point_location[1])
+            lane_dividerright_y = (laneEdgePoint[1], self.center_point_location[1])
             returnArray = [leg_edge_x, leg_edge_y, lane_stop_x, lane_stop_y, lane_edgeleft_x, lane_edgeleft_y, lane_edgeright_x,
                                 lane_edgeright_y, lane_dividerleft_x, lane_dividerleft_y, lane_dividerright_x, lane_dividerright_y]
             return returnArray
         elif (orientation == "bottom"):
             leg_edge_x = (laneEdgePoint[0], laneEdgePoint[0])
-            leg_edge_y = (0, laneEdgePoint[1])
+            leg_edge_y = (-1 * self.center_point_location[1], laneEdgePoint[1])
 
             lane_stop_x = (laneEdgePoint[0], laneEdgePoint[0] + lane_width)
             lane_stop_y = (laneEdgePoint[1] - 14.5, laneEdgePoint[1] - 14.5)
 
             lane_edgeleft_x = (laneEdgePoint[0] - lane_width, laneEdgePoint[0] - lane_width)
-            lane_edgeleft_y = (0, laneEdgePoint[1])
+            lane_edgeleft_y = (-1 * self.center_point_location[1], laneEdgePoint[1])
 
             lane_edgeright_x = (laneEdgePoint[0] + lane_width, laneEdgePoint[0] + lane_width)
-            lane_edgeright_y = (0, laneEdgePoint[1])
+            lane_edgeright_y = (-1 * self.center_point_location[1], laneEdgePoint[1])
 
             lane_dividerleft_x = (laneEdgePoint[0] - (lane_width / 2), laneEdgePoint[0] - (lane_width / 2))
-            lane_dividerleft_y = (0, laneEdgePoint[1])
+            lane_dividerleft_y = (-1 * self.center_point_location[1], laneEdgePoint[1])
 
             lane_dividerright_x = (laneEdgePoint[0] + (lane_width / 2), laneEdgePoint[0] + (lane_width / 2))
-            lane_dividerright_y = (0, laneEdgePoint[1])
+            lane_dividerright_y = (-1 * self.center_point_location[1], laneEdgePoint[1])
             returnArray = [leg_edge_x, leg_edge_y, lane_stop_x, lane_stop_y, lane_edgeleft_x, lane_edgeleft_y, lane_edgeright_x,
                                 lane_edgeright_y, lane_dividerleft_x, lane_dividerleft_y, lane_dividerright_x, lane_dividerright_y]
             return returnArray
@@ -104,8 +104,8 @@ class Intersection:
     # plotting singular point.
     def plot_intersection(self, rightArr, topArr, leftArr, bottomArr, right_lane_edge_point, top_lane_edge_point, left_lane_edge_point, bottom_lane_edge_point):
         plt.rcParams["figure.facecolor"] = '0.8'
-        plt.xlim(0, 2 * self.center_point_location[0])
-        plt.ylim(0, 2 * self.center_point_location[1])
+        plt.xlim(-1 * self.center_point_location[0], self.center_point_location[0])
+        plt.ylim(-1 * self.center_point_location[1], self.center_point_location[1])
 
         #Plot Right Graph
         plt.plot(right_lane_edge_point[0], right_lane_edge_point[1], marker='o', markersize=5, markeredgecolor="red", markerfacecolor="green")
@@ -161,20 +161,3 @@ class Intersection:
         trajectory2.compute_trajectory(point1b, point2b, point3b, point4b)
 
         plt.show()
-
-    # plotting centerline for each leg.
-    # def plot_centerline_leg(self):
-    #    for x in self.legs_collection:
-    #        x_values = np.empty(x.leg_geometry.length, dtype=int)
-    #        y_values = np.empty(x.leg_geometry.length, dtype=int)
-    #        for i in range(0, x.leg_geometry.length - 1):
-    #            x_values[i] = x.leg_geometry[i][0]
-    #            y_values[i] = x.leg_geometry[i][1]
-    #        plt.plot(x_values, y_values) 
-    
-    # plot the lane edges
-    #def plot_lane_edges:
-        
-
-    # plot the edge of the interesection edge
-    #def plot_intersection_edge:
