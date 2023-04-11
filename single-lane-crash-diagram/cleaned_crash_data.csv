@@ -1,0 +1,55 @@
+,Orig. Index,Direction,Maneuver,Vehicle Type,Num Involved,Maneuver Accepted,PedPresent
+0,662,"['North', 'North']","['Changing Lanes', 'Turning Left']","['Vehicle', 'Vehicle']",2,True,False
+1,728,"['None', 'West']",['Turning Right'],"['Vehicle', 'Pedestrian']",2,True,True
+2,2261,"['None', 'North']",['Straight'],"['Vehicle', 'Pedestrian']",2,True,True
+3,2566,"['West', 'West']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+4,2707,"['North', 'West']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+5,2906,"['North', 'North']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+6,2927,"['North', 'North']","['Straight', 'Turning Right']","['Vehicle', 'Vehicle']",2,True,False
+7,3600,"['North', 'North']","['Straight', 'Turning Left']","['Vehicle', 'Vehicle']",2,True,False
+8,3928,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+9,4298,"['North', 'North']","['Straight', 'Turning Right']","['Vehicle', 'Vehicle']",2,True,False
+10,4475,"['West', 'West']","['Turning Right', 'Turning Right']","['Vehicle', 'Vehicle']",2,True,False
+11,6253,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+12,6782,"['North', 'West']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+13,6896,"['North', 'South']","['Straight', 'Turning Left']","['Vehicle', 'Vehicle']",2,True,False
+14,7127,"['North', 'South']","['Stopped', 'Turning Left']","['Vehicle', 'Vehicle']",2,True,False
+15,7992,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+16,8299,"['North', 'South']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+17,8302,"['East', 'North']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+18,8676,"['West', 'West']","['Turning Right', 'Turning Right']","['Vehicle', 'Vehicle']",2,True,False
+19,8738,"['North', 'North']","['Straight', 'Turning Right']","['Vehicle', 'Vehicle']",2,True,False
+20,8902,"['West', 'West']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+21,8924,"['East', 'North']","['Straight', 'Turning Right']","['Vehicle', 'Vehicle']",2,True,False
+22,9161,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+23,9711,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+24,11446,"['North', 'North']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+25,14448,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+26,14456,"['East', 'East']","['Straight', 'Turning Left']","['Vehicle', 'Vehicle']",2,True,False
+27,14768,"['West', 'West']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+28,15288,"['North', 'West']","['Stopped', 'Turning Right']","['Vehicle', 'Vehicle']",2,True,False
+29,16146,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+30,16281,"['North', 'West']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+31,16577,"['North', 'West']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+32,16950,"['East', 'West']","['Stopped', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+33,17475,"['East', 'East']","['Turning Left', 'Turning Right']","['Vehicle', 'Vehicle']",2,True,False
+34,18267,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+35,20289,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+36,21344,"['South', 'South']","['Turning Left', 'Turning Right']","['Vehicle', 'Vehicle']",2,True,False
+37,21988,"['East', 'East']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+38,22522,"['North', 'North']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+39,22646,"['North', 'West']","['Straight', 'Turning Left']","['Vehicle', 'Vehicle']",2,True,False
+40,23623,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+41,23787,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+42,23838,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+43,23893,"['None', 'North']",['Straight'],"['Vehicle', 'Pedestrian']",2,True,True
+44,25249,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+45,27545,"['West', 'West']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+46,27950,"['East', 'East']","['Backing', 'Turning Left']","['Vehicle', 'Vehicle']",2,True,False
+47,28258,"['North', 'North']","['Straight', 'Turning Left']","['Vehicle', 'Vehicle']",2,True,False
+48,28648,"['None', 'West']",['Turning Right'],"['Vehicle', 'Pedestrian']",2,True,True
+49,30174,"['North', 'North']","['Straight', 'Turning Left']","['Vehicle', 'Vehicle']",2,True,False
+50,31357,"['North', 'North']","['Straight', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+51,31725,"['East', 'East']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
+52,32082,"['East', 'West']","['Straight', 'Turning Left']","['Vehicle', 'Vehicle']",2,True,False
+53,34208,"['North', 'North']","['Changing Lanes', 'Straight']","['Vehicle', 'Vehicle']",2,True,False
