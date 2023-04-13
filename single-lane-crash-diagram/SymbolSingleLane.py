@@ -1,7 +1,5 @@
 #Importing Modules
 import pandas as pd
-# import numpy as np
-# import re
 from pprint import pprint
 import matplotlib.pyplot as plt
 import math
@@ -11,11 +9,10 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib.cm as cm
 import os
-import PythonCleaning
 
 # Grouping Approach
 class Symbol:
-    def __init__(self, v1direction, v1manuever, v2direction, v2manuever, stationary_present, stationary_direction, side_swipe):
+    def __init__(self, v1direction, v1manuever, v2direction, v2manuever, side_swipe, stationary_present, stationary_direction):
         self.v1manuever = v1manuever
         self.v2manuever = v2manuever
         self.v1direction = v1direction
@@ -45,7 +42,7 @@ class Symbol:
 
         #ALL STATIONARY OBJECTS
         # Plot pedestrian or bicycle arrowhead
-        if (self.stationary_present == "Bicycle" or self.stationary_present == "Pedestrian"):
+        if (self.stationary_present == "Bicycle" or self.stationary_present == "Pedestrian" or self.stationary_present == "Parked Vehicle"):
             if (self.stationary_direction == "North"):
                 plt.arrow(0.2, 0, 0, 0.001, head_width=0.35, head_length=0.35, color = 'lightblue')
             elif (self.stationary_direction == "South"):
@@ -55,17 +52,21 @@ class Symbol:
             elif (self.stationary_direction == "East"):
                 plt.arrow(0.1, 0.2, 0.001, 0, head_width=0.35, head_length=0.35, color = 'lightblue')
         # Plot pedestrian or bicycle arrowhead
-        if (self.stationary_present == "Pedestrian"):
-            # Draw the body
-            ax.plot([0.2, 0.2], [0.2, 0.15], linewidth=3, color='black')
-            # Draw the legs
-            ax.plot([0.2, 0.17], [0.15, 0.05], linewidth=3, color='black')
-            ax.plot([0.2, 0.23], [0.15, 0.05], linewidth=3, color='black')
-            # Draw the arms
-            ax.plot([0.2, 0.15], [0.2, 0.23], linewidth=3, color='black')
-            ax.plot([0.2, 0.25], [0.2, 0.23], linewidth=3, color='black')
+        if (self.stationary_present == True):
             # Draw the head
-            ax.add_patch(plt.Circle((0.2, 0.25), radius=0.03, color='black'))
+            ax.add_artist(plt.Circle((0.2, 0.3), 0.05, color='black'))
+
+            # Draw the body
+            ax.plot([0.2, 0.2], [0.2, 0.05], linewidth=6, color='black')
+
+            # Draw the legs
+            ax.plot([0.2, 0.12], [0.05, -0.03], linewidth=6, color='black')
+            ax.plot([0.2, 0.28], [0.05, -0.03], linewidth=6, color='black')
+
+            # Draw the arms
+            ax.plot([0.2, 0.12], [0.2, 0.24], linewidth=6, color='black')
+            ax.plot([0.2, 0.28], [0.2, 0.24], linewidth=6, color='black')
+
         elif (self.stationary_present == "Bicycle"):
             # Draw bicycle
             wheel1 = plt.Circle((0.15, 0.15), radius=0.02, color='black')
@@ -86,21 +87,20 @@ class Symbol:
             ax.add_line(chain)
         # Plot Parked Vehicle
         elif (self.stationary_present == "Parked Vehicle"):
-            if (self.stationary_direction == "North"):
-                plt.arrow(0.2, 0.1, 0, 0.001, width = 0.05, color = 'lightblue')
-            elif (self.stationary_direction == "South"):
-                plt.arrow(0.2, 0.3, 0, -0.001, width = 0.05, color = 'lightblue')
-            elif (self.stationary_direction == "West"):
-                plt.arrow(0.3, 0.2, -0.001, 0, width = 0.05, color = 'lightblue')
-            elif (self.stationary_direction == "East"):
-                plt.arrow(0.1, 0.2, 0.001, 0, width = 0.05, color = 'lightblue')
+            rect = plt.Rectangle((0.1, 0.1), 0.2, 0.2, color="lightblue")
+            ax.add_patch(rect)
 
         # PLOTTING VEHICLE ARROWS
         def v_arrow(v, arrow_color):
             straight = "Straight"
             right = "Turning Right"
             left = "Turning Left"
+            stopped = "Stopped"
 
+            #Random arrow in case empty string.
+            if (self.v1manuever == "" and self.v2manuever == ""):
+                plt.arrow(0.2, -.2, 0, 0.25, width = 0.05, color = arrow_color)
+                
             if (self.side_swipe == False):
                 if self.counter %2 == 0:
                     if ((self.v1 == self.v2) or
@@ -122,6 +122,17 @@ class Symbol:
                         self.adjust_v2= 0.5
                     else:
                         self.adjust_v2 = 0
+                
+                # Stopped Vector (aka Through Turn Vector)
+                if (v == ("North", stopped)):
+                    plt.arrow(0.2, 0.1, 0, 0.001, width = 0.05, color = arrow_color)
+                if (v == ("South", stopped)):
+                    plt.arrow(0.2, 0.3, 0, -0.001, width = 0.05, color = arrow_color)
+                if (v == ("West", stopped)):
+                    plt.arrow(0.3, 0.2, -0.001, 0, width = 0.05, color = arrow_color)
+                if (v == ("East", stopped)):
+                    plt.arrow(0.1, 0.2, 0.001, 0, width = 0.05, color = arrow_color)
+
                 # Straight Vector (aka Through Turn Vector)
                 if (v == ("North", straight)):
                     plt.arrow(0.2, -.3 + self.adjust_v2, 0, 0.25, width = 0.05, color = arrow_color)
@@ -234,9 +245,11 @@ class Symbol:
             
                     self.counter += 1
         # Plotting Vehicles
-        v_arrow(self.v1, 'red')
-        v_arrow(self.v2,'darkorange')
-
+        if (self.v1manuever == "" and self.v2manuever == ""):
+            v_arrow(self.v1, 'grey')
+        else:            
+            v_arrow(self.v1, 'red')
+            v_arrow(self.v2,'darkorange')
 
 class Symbol_Map:
     def data_cleaner(file_name, intersection_center):
@@ -303,13 +316,8 @@ class Symbol_Map:
             num_involved.append(len(eachrow[2])) 
             maneuv_accepted.append("Straight" in eachrow[1] or "Turning Right" in eachrow[1] or "Turning Left" in eachrow[1])
         for_symbology["Num Involved"] = num_involved
-        for_symbology["Maneuver Accepted"] = maneuv_accepted
-        
-        #
-        #
-        #
-        #
-        #
+        for_symbology["Maneuver Accepted"] = maneuv_accepted 
+  
         #
         #Separating crash scenarios we are currently capable of handling from those 
         #we will be able to handle in the future. Cases we are not able to 
@@ -321,11 +329,6 @@ class Symbol_Map:
         for_symbology = for_symbology[for_symbology["Maneuver Accepted"] == True]
         # Cases we can't plot: _______________________
         #
-        #
-        #
-        #
-        #
-        
 
         #Checks the Vehicle Type column for presence of "Pedestrian". Creates new column with boolean values to indicate if pedestrian found. 
         ped_list = []
@@ -361,7 +364,6 @@ class Symbol_Map:
                     sub_list = [item[1][0],item[2][maneuv_index],item[1][1],item[2][maneuv_index], True, False, False]
                     #sub_list = [v1dir, v1manuev, v1dir, v1manuev, sideswipe=True, stationary_present=False, stationary_dir=False]
                 
-            
             #Else pedestrian present (and None is one of the directions), ensure other direction is 
             #assigned to the vehicle:
             elif "Pedestrian" in item[3]:
@@ -388,52 +390,228 @@ class Symbol_Map:
         return final_list
         #return pd.concat([for_symbology, formatted_df], axis = 1)
 
-
     #INPUT BUTTON
     symbol_list = []
-
-
+    symbol01 = Symbol("", "", "", "", "", "", False)
+    symbol02 = Symbol("", "", "", "", "", "", False)
+    symbol03 = Symbol("", "", "", "", "", "", False)
+    symbol04 = Symbol("", "", "", "", "", "", False)
+    symbol05 = Symbol("", "", "", "", "", "", False)
+    symbol06 = Symbol("", "", "", "", "", "", False)
+    symbol07 = Symbol("", "", "", "", "", "", False)
+    symbol08 = Symbol("", "", "", "", "", "", False)
+    symbol09 = Symbol("", "", "", "", "", "", False)
+    symbol10 = Symbol("", "", "", "", "", "", False)
+    symbol11 = Symbol("", "", "", "", "", "", False)
+    symbol12 = Symbol("", "", "", "", "", "", False)
+    symbol13 = Symbol("", "", "", "", "", "", False)
+    symbol14 = Symbol("", "", "", "", "", "", False)
+    symbol15 = Symbol("", "", "", "", "", "", False)
+    symbol16 = Symbol("", "", "", "", "", "", False)
+    symbol17 = Symbol("", "", "", "", "", "", False)
+    symbol18 = Symbol("", "", "", "", "", "", False)
+    symbol19 = Symbol("", "", "", "", "", "", False)
+    symbol20 = Symbol("", "", "", "", "", "", False)
+    symbol21 = Symbol("", "", "", "", "", "", False)
+    symbol22 = Symbol("", "", "", "", "", "", False)
+    symbol23 = Symbol("", "", "", "", "", "", False)
+    symbol24 = Symbol("", "", "", "", "", "", False)
+    symbol25 = Symbol("", "", "", "", "", "", False)
+    symbol26 = Symbol("", "", "", "", "", "", False)
+    symbol27 = Symbol("", "", "", "", "", "", False)
+    symbol28 = Symbol("", "", "", "", "", "", False)
+    symbol29 = Symbol("", "", "", "", "", "", False)
+    symbol30 = Symbol("", "", "", "", "", "", False)
+    symbol31 = Symbol("", "", "", "", "", "", False)
+    symbol32 = Symbol("", "", "", "", "", "", False)
+    symbol33 = Symbol("", "", "", "", "", "", False)
+    symbol_list.extend((
+        symbol01, symbol02, symbol03, symbol04, symbol05, symbol06, symbol07,symbol08, symbol09, symbol10,
+        symbol11, symbol12, symbol13, symbol14, symbol15, symbol16, symbol17,symbol18, symbol19, symbol20,
+        symbol21, symbol22, symbol23, symbol24, symbol25, symbol26, symbol27,symbol28, symbol29, symbol30,
+        symbol31, symbol32, symbol33
+    ))
 
     file = "CollisionsDataset5000ft.csv"
     center = (33.75713, -84.38610)
-    for sublist in data_cleaner(file, center):
-        symbol_list.append(Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6]))
+    data_counter = np.zeros(33)
+    data_counter = data_counter.astype(int)
+    max_counter = np.zeros(33)
+    max_counter = data_counter.astype(int)
+    total_crashes = 0
 
-    # symbol_list.extend((
-    #     Symbol("South", "Turning Right", "South", "Turning Right", "Parked Vehicle", "", False), #1
-    #     Symbol("South", "Turning Left", "South", "Turning Left", "Parked Vehicle", "", False), #2
-    #     Symbol("North", "Turning Right", "North", "Turning Right", "Parked Vehicle", "", False), #3
-    #     Symbol("North", "Turning Left", "North", "Turning Left", "Parked Vehicle", "", False), #4
-    #     Symbol("West", "Turning Right", "West", "Turning Right", "Parked Vehicle", "", False) #5
-    #     # Symbol("West", "Turning Left", "West", "Turning Left", "Parked Vehicle", "", False), #6
-    #     # Symbol("East", "Turning Right", "East", "Turning Right", "Parked Vehicle", "", False), #7
-    #     # Symbol("East", "Turning Left", "East", "Turning Left", "Parked Vehicle", "", False), #8
-    #     # Symbol("South", "Turning Right", "South", "Turning Right", "Parked Vehicle", "", False), #9
-    #     # Symbol("South", "Turning Left", "South", "Turning Left", "Parked Vehicle", "", False), #10
-    #     # Symbol("North", "Turning Right", "North", "Turning Right", "Parked Vehicle", "", False), #11
-    #     # Symbol("North", "Turning Left", "North", "Turning Left", "Parked Vehicle", "", False), #12
-    #     # Symbol("West", "Turning Right", "West", "Turning Right", "Parked Vehicle", "", False), #13
-    #     # Symbol("West", "Turning Left", "West", "Turning Left", "Parked Vehicle", "", False), #14
-    #     # Symbol("East", "Turning Right", "East", "Turning Right", "Parked Vehicle", "", False), #15
-    #     # Symbol("East", "Turning Left", "East", "Turning Left", "Parked Vehicle", "", False), #16
-    #     # Symbol("South", "Turning Right", "South", "Turning Right", "Parked Vehicle", "", False), #17
-    #     # Symbol("South", "Turning Left", "South", "Turning Left", "Parked Vehicle", "", False), #18
-    #     # Symbol("North", "Turning Right", "North", "Turning Right", "Parked Vehicle", "", False), #19
-    #     # Symbol("North", "Turning Left", "North", "Turning Left", "Parked Vehicle", "", False), #20
-    #     # Symbol("West", "Turning Right", "West", "Turning Right", "Parked Vehicle", "", False), #21
-    #     # Symbol("West", "Turning Left", "West", "Turning Left", "Parked Vehicle", "", False), #22
-    #     # Symbol("East", "Turning Right", "East", "Turning Right", "Parked Vehicle", "", False), #23
-    #     # Symbol("East", "Turning Left", "East", "Turning Left", "Parked Vehicle", "", False), #24
-    #     # Symbol("South", "Turning Right", "South", "Turning Right", "Parked Vehicle", "", False), #25
-    #     # Symbol("South", "Turning Left", "South", "Turning Left", "Parked Vehicle", "", False), #26
-    #     # Symbol("North", "Turning Right", "North", "Turning Right", "Parked Vehicle", "", False), #27
-    #     # Symbol("North", "Turning Left", "North", "Turning Left", "Parked Vehicle", "", False), #28
-    #     # Symbol("West", "Turning Right", "West", "Turning Right", "Parked Vehicle", "", False), #29
-    #     # Symbol("West", "Turning Left", "West", "Turning Left", "Parked Vehicle", "", False), #30
-    #     # Symbol("East", "Turning Right", "East", "Turning Right", "Parked Vehicle", "", False), #31
-    #     # Symbol("East", "Turning Left", "East", "Turning Left", "Parked Vehicle", "", False), #32
-    #     # Symbol("East", "Turning Left", "East", "Turning Left", "Parked Vehicle", "", False) #33
-    # ))
+    for sublist in data_cleaner(file, center):
+        max_count = 0
+        total_crashes = total_crashes + 1
+        for sublist2 in data_cleaner(file, center):
+            if (sublist == sublist2):
+                max_count = max_count + 1
+        if (sublist == ['South', 'Stopped', 'North', 'Turning Left', False, False, False] or
+            sublist == ['South', 'Stopped', 'North', 'Turning Right', False, False, False] or
+            sublist == ['South', 'Stopped', 'North', 'Straight', False, False, False] or
+            sublist == ['South', 'Stopped', 'East', 'Turning Left', False, False, False] or
+            sublist == ['South', 'Stopped', 'East', 'Turning Right', False, False, False] or
+            sublist == ['South', 'Stopped', 'East', 'Straight', False, False, False] or
+            sublist == ['South', 'Stopped', 'West', 'Turning Left', False, False, False] or
+            sublist == ['South', 'Stopped', 'West', 'Turning Right', False, False, False] or
+            sublist == ['South', 'Stopped', 'West', 'Straight', False, False, False] or
+            sublist == ['South', 'Stopped', 'South', 'Straight', False, False, False]
+        ):
+            if max_counter[0] < max_count:
+                max_counter[0] = max_count
+                symbol_list[0]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[0] = data_counter[0] + 1
+
+
+        if (sublist == ['North', 'Straight', 'East', 'Turning Left', False, False, False]):
+            if max_counter[3] < max_count:
+                max_counter[3] = max_count
+                symbol_list[3]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[3] = data_counter[3] + 1
+
+
+        if (sublist == ['West', 'Straight', 'North', 'Turning Left', False, False, False]):
+            if max_counter[5] < max_count:
+                max_counter[5] = max_count
+                symbol_list[5]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[5] = data_counter[5] + 1
+
+        if (sublist == ['West', 'Straight', 'South', 'Turning Left', False, False, False]):
+            if max_counter[7] < max_count:
+                max_counter[7] = max_count
+                symbol_list[7]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[7] = data_counter[7] + 1
+
+        if (sublist == ['West', 'Straight', 'East', 'Turning Left', False, False, False]):
+            if max_counter[8] < max_count:
+                max_counter[8] = max_count
+                symbol_list[8]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[8] = data_counter[8] + 1
+
+        if (sublist ==  ['North', 'Straight', 'West', 'Straight', False, False, False] or
+             sublist ==  ['West', 'Straight', 'North', 'Straight', False, False, False]
+        ):
+            if max_counter[9] < max_count:
+                max_counter[9] = max_count
+                symbol_list[9]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[9]  = data_counter[9] + 1     
+
+        if (sublist == ['West', 'Stopped', 'South', 'Turning Left', False, False, False] or
+            sublist == ['West', 'Stopped', 'South', 'Turning Right', False, False, False] or
+            sublist == ['West', 'Stopped', 'South', 'Straight', False, False, False] or
+            sublist == ['West', 'Stopped', 'East', 'Turning Left', False, False, False] or
+            sublist == ['West', 'Stopped', 'East', 'Turning Right', False, False, False] or
+            sublist == ['West', 'Stopped', 'East', 'Straight', False, False, False] or
+            sublist == ['West', 'Stopped', 'North', 'Turning Left', False, False, False] or
+            sublist == ['West', 'Stopped', 'North', 'Turning Right', False, False, False] or
+            sublist == ['West', 'Stopped', 'North', 'Straight', False, False, False] or
+            sublist == ['West', 'Stopped', 'West', 'Straight', False, False, False]
+        ):
+            if max_counter[10] < max_count:
+                max_counter[10] = max_count
+                symbol_list[10]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[10] = data_counter[10] + 1
+
+        if (sublist == ['South', 'Straight', 'North', 'Turning Left', False, False, False]):
+            if max_counter[12] < max_count:
+                max_counter[12] = max_count
+                symbol_list[12]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[12] = data_counter[12] + 1
+
+        if (sublist == ['West', 'Straight', 'South', 'Turning Left', False, False, False]):
+            if max_counter[13] < max_count:
+                max_counter[13] = max_count
+                symbol_list[13]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[13] = data_counter[13] + 1
+
+        if (sublist == ['East', 'Straight', 'South', 'Turning Right', False, False, False]):
+            if max_counter[14] < max_count:
+                max_counter[14] = max_count
+                symbol_list[14]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[14] = data_counter[14] + 1
+
+        if (sublist == ['South', 'Straight', 'East', 'Turning Left', False, False, False]):
+            if max_counter[19] < max_count:
+                max_counter[19] = max_count
+                symbol_list[19]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[19] = data_counter[19] + 1
+
+        if (sublist == ['North', 'Straight', 'South', 'Turning Left', False, False, False]):
+            if max_counter[20] < max_count:
+                max_counter[20] = max_count
+                symbol_list[20]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[20] = data_counter[20] + 1
+
+        if (sublist == ['East', 'Stopped', 'South', 'Turning Left', False, False, False] or
+            sublist == ['East', 'Stopped', 'South', 'Turning Right', False, False, False] or
+            sublist == ['East', 'Stopped', 'South', 'Straight', False, False, False] or
+            sublist == ['East', 'Stopped', 'North', 'Turning Left', False, False, False] or
+            sublist == ['East', 'Stopped', 'North', 'Turning Right', False, False, False] or
+            sublist == ['East', 'Stopped', 'North', 'Straight', False, False, False] or
+            sublist == ['East', 'Stopped', 'West', 'Turning Left', False, False, False] or
+            sublist == ['East', 'Stopped', 'West', 'Turning Right', False, False, False] or
+            sublist == ['East', 'Stopped', 'West', 'Straight', False, False, False] or
+            sublist == ['East', 'Stopped', 'East', 'Straight', False, False, False]
+        ):
+            if max_counter[22] < max_count:
+                max_counter[22] = max_count
+                symbol_list[22]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[22] = data_counter[22] + 1
+            
+        if (sublist == ['East', 'Straight', 'West', 'Turning Left', False, False, False]):
+            if max_counter[24] < max_count:
+                max_counter[24] = max_count
+                symbol_list[24]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[24] = data_counter[24] + 1
+
+        if (sublist == ['East', 'Straight', 'North', 'Turning Left', False, False, False]):
+            if max_counter[25] < max_count:
+                max_counter[25] = max_count
+                symbol_list[25]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[25] = data_counter[25] + 1
+            
+        if (sublist ==  ['North', 'Straight', 'East', 'Straight', True, False, False] or
+             sublist ==  ['East', 'Straight', 'North', 'Straight', True, False, False]
+        ):
+            if max_counter[26] < max_count:
+                max_counter[26] = max_count
+                symbol_list[26]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[26] = data_counter[26] + 1
+
+        if (sublist == ['East', 'Straight', 'South', 'Turning Left', False, False, False]):
+            if max_counter[27] < max_count:
+                max_counter[27] = max_count
+                symbol_list[27]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[27] = data_counter[27] + 1
+
+        if (sublist == ['South', 'Straight', 'West', 'Turning Left', False, False, False]):
+            if max_counter[29] < max_count:
+                max_counter[29] = max_count
+                symbol_list[29]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[29] = data_counter[29] + 1
+        
+        if (sublist == ['North', 'Straight', 'East', 'Turning Right', False, False, False]):
+            if max_counter[31] < max_count:
+                max_counter[31] = max_count
+                symbol_list[31]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[31] = data_counter[31] + 1
+
+        if (sublist == ['North', 'Stopped', 'South', 'Turning Left', False, False, False] or
+            sublist == ['North', 'Stopped', 'South', 'Turning Right', False, False, False] or
+            sublist == ['North', 'Stopped', 'South', 'Straight', False, False, False] or
+            sublist == ['North', 'Stopped', 'East', 'Turning Left', False, False, False] or
+            sublist == ['North', 'Stopped', 'East', 'Turning Right', False, False, False] or
+            sublist == ['North', 'Stopped', 'East', 'Straight', False, False, False] or
+            sublist == ['North', 'Stopped', 'West', 'Turning Left', False, False, False] or
+            sublist == ['North', 'Stopped', 'West', 'Turning Right', False, False, False] or
+            sublist == ['North', 'Stopped', 'West', 'Straight', False, False, False] or
+            sublist == ['North', 'Stopped', 'North', 'Straight', False, False, False]
+        ):
+            if max_counter[32] < max_count:
+                max_counter[32] = max_count
+                symbol_list[32]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[32] = data_counter[32] + 1
+    total_crashes_plotted = sum(data_counter)
 
     file_list = []
     # Creating and saving all symbols into computer
@@ -442,12 +620,16 @@ class Symbol_Map:
         symbol.plot()
         png_string = 'symbol' + str(symbolCount) + '.png'
         plt.savefig(png_string, bbox_inches='tight',transparent=True)
+        plt.close()
         file_list.append(png_string)
         symbolCount = symbolCount + 1
     def _init_ (self):
         self.file_list = file_list
-    print (file_list)
 
+    print (max_counter)
+    print (data_counter)
+    print(total_crashes_plotted)
+    print(total_crashes)
 
     # DELETE FILES BUTTTON
     # for i in range(1, symbolCount + 1):
@@ -459,6 +641,3 @@ class Symbol_Map:
     #     else:
     #         print("File does not exist")
     #     symbolCount = symbolCount - 1
-
-
-## Future data cleaning: 4 OR 3 vehicles, "Backing", "Stopped", "Entering and Leaving", ect
