@@ -1,0 +1,55 @@
+,V1 Dir,V1 Manuev,V2 Dir,V2 Maneuv,Sideswipe,Stationary Present,Stationary Dir
+0,North,Turning Left,North,Turning Left,True,False,False
+1,West,Turning Right,None,None,False,True,False
+2,North,Straight,None,None,False,True,False
+3,West,Straight,West,Straight,True,False,False
+4,North,Straight,West,Straight,False,False,False
+5,North,Straight,North,Straight,False,False,False
+6,North,Straight,North,Turning Right,False,False,False
+7,North,Straight,North,Turning Left,False,False,False
+8,North,Straight,North,Straight,True,False,False
+9,North,Straight,North,Turning Right,False,False,False
+10,West,Turning Right,West,Turning Right,False,False,False
+11,North,Straight,North,Straight,True,False,False
+12,North,Straight,West,Straight,False,False,False
+13,North,Straight,South,Turning Left,False,False,False
+14,North,Stopped,South,Turning Left,False,False,False
+15,North,Straight,North,Straight,True,False,False
+16,North,Straight,South,Straight,False,False,False
+17,East,Straight,North,Straight,False,False,False
+18,West,Turning Right,West,Turning Right,False,False,False
+19,North,Straight,North,Turning Right,False,False,False
+20,West,Straight,West,Straight,False,False,False
+21,East,Straight,North,Turning Right,False,False,False
+22,North,Straight,North,Straight,True,False,False
+23,North,Straight,North,Straight,True,False,False
+24,North,Straight,North,Straight,False,False,False
+25,North,Straight,North,Straight,True,False,False
+26,East,Straight,East,Turning Left,False,False,False
+27,West,Straight,West,Straight,False,False,False
+28,North,Stopped,West,Turning Right,False,False,False
+29,North,Straight,North,Straight,True,False,False
+30,North,Straight,West,Straight,False,False,False
+31,North,Straight,West,Straight,False,False,False
+32,East,Stopped,West,Straight,False,False,False
+33,East,Turning Left,East,Turning Right,False,False,False
+34,North,Straight,North,Straight,True,False,False
+35,North,Straight,North,Straight,True,False,False
+36,South,Turning Left,South,Turning Right,False,False,False
+37,East,Straight,East,Straight,True,False,False
+38,North,Straight,North,Straight,False,False,False
+39,North,Straight,West,Turning Left,False,False,False
+40,North,Straight,North,Straight,True,False,False
+41,North,Straight,North,Straight,True,False,False
+42,North,Straight,North,Straight,True,False,False
+43,North,Straight,None,None,False,True,False
+44,North,Straight,North,Straight,True,False,False
+45,West,Straight,West,Straight,True,False,False
+46,East,Backing,East,Turning Left,False,False,False
+47,North,Straight,North,Turning Left,False,False,False
+48,West,Turning Right,None,None,False,True,False
+49,North,Straight,North,Turning Left,False,False,False
+50,North,Straight,North,Straight,False,False,False
+51,East,Straight,East,Straight,True,False,False
+52,East,Straight,West,Turning Left,False,False,False
+53,North,Straight,North,Straight,True,False,False
