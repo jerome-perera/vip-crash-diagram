@@ -3,6 +3,10 @@ import numpy as np
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from Symbol import Symbol_Map
 import random
+from scipy.interpolate import make_interp_spline, BSpline
+from scipy.ndimage import rotate
+import os
+
 
 plt.rcParams["figure.figsize"] = [8, 8]
 plt.rcParams["figure.autolayout"] = True
@@ -37,46 +41,149 @@ plt.plot(x6, y6, color="orange")
 plt.plot(x7, y7, color="orange")
 plt.plot(x8, y8, color="orange")
 
+# Curved Left turn Trajectories
+x9 = [18, 27, 30]
+y9 = [42, 48, 54]
+spl = make_interp_spline(x9, y9, k=2)
+xs = np.linspace(18, 30, 102)
+ys = spl(xs)
+plt.plot(xs, ys, color="red", linestyle="dotted")
+plt.arrow(20, 41.75, -1, 0, color="red", width=0.1, head_width=0.5, length_includes_head=True)
+
+
+x9 = [18, 24, 30]
+y9 = [30, 27, 18]
+spl = make_interp_spline(x9, y9, k=2)
+xs = np.linspace(18, 30, 102)
+ys = spl(xs)
+plt.plot(xs, ys, color="red", linestyle="dotted")
+plt.arrow(29, 20, 0.5, -1, color="red", width=0.1, head_width=0.5, length_includes_head=True)
+
+x9 = [42, 45, 54]
+y9 = [18, 24, 30]
+spl = make_interp_spline(x9, y9, k=2)
+xs = np.linspace(42, 54, 102)
+ys = spl(xs)
+plt.plot(xs, ys, color="red", linestyle="dotted")
+plt.arrow(52, 30.25, 1, 0, color="red", width=0.1, head_width=0.5, length_includes_head=True)
+
+x9 = [42, 48, 54]
+y9 = [54, 45, 42]
+spl = make_interp_spline(x9, y9, k=2)
+xs = np.linspace(42, 54, 102)
+ys = spl(xs)
+plt.plot(xs, ys, color="red", linestyle="dotted")
+plt.arrow(43, 52.25, -0.5, 1, color="red", width=0.1, head_width=0.5, length_includes_head=True)
+
+# Curved purple Trajectories
+x10 = [30, 34, 36, 40, 42, 48, 54]
+y10 = [54, 42, 40, 36, 34, 30, 30]
+spl2 = make_interp_spline(x10, y10, k=2)
+xs2 = np.linspace(30, 54, 102)
+ys2 = spl2(xs2)
+plt.plot(xs2, ys2, color="purple", linestyle="dotted")
+plt.arrow(52, 29.5, 1, 0, color="purple", width=0.1, head_width=0.5, length_includes_head=True)
+
+x10 = [18, 30, 32, 36, 38, 42, 43]
+y10 = [30, 34, 36, 40, 42, 48, 51]
+spl2 = make_interp_spline(x10, y10, k=2)
+xs2 = np.linspace(18, 43.25, 102)
+ys2 = spl2(xs2)
+plt.plot(xs2, ys2, color="purple", linestyle="dotted")
+plt.arrow(43.25, 52, 0.25, 1, color="purple", width=0.1, head_width=0.5, length_includes_head=True)
+
+x10 = [24, 30, 32, 36, 37.75, 40.25, 41.5, 41.75]
+y10 = [42, 38, 36, 32, 30,    24, 20,   19]
+spl2 = make_interp_spline(x10, y10, k=2)
+xs2 = np.linspace(18, 41.75, 102)
+ys2 = spl2(xs2)
+plt.plot(xs2, ys2, color="purple", linestyle="dotted")
+plt.arrow(19.75, 43, -1, 0, color="purple", width=0.1, head_width=0.5, length_includes_head=True)
+
+x10 = [29, 30, 34, 36, 40, 42, 54]
+y10 = [21, 24, 30, 32, 36, 38, 41.5]
+spl2 = make_interp_spline(x10, y10, k=2)
+xs2 = np.linspace(28.5, 54, 102)
+ys2 = spl2(xs2)
+plt.plot(xs2, ys2, color="purple", linestyle="dotted")
+plt.arrow(28.75, 20, -0.25, -1, color="purple", width=0.1, head_width=0.5, length_includes_head=True)
+
+# Curved green Trajectories
+x10 = [18, 30, 42]
+y10 = [36, 30, 18]
+spl2 = make_interp_spline(x10, y10, k=2)
+xs2 = np.linspace(18, 42, 102)
+ys2 = spl2(xs2)
+plt.plot(xs2, ys2, color="green", linestyle="dotted")
+plt.arrow(19.5, 35.5, -.5, .25, color="green", width=0.1, head_width=0.5, length_includes_head=True)
+
+x10 = [18, 30, 36]
+y10 = [30, 42, 54]
+spl2 = make_interp_spline(x10, y10, k=2)
+xs2 = np.linspace(18, 36, 102)
+ys2 = spl2(xs2)
+plt.plot(xs2, ys2, color="green", linestyle="dotted")
+plt.arrow(35.25, 52.25, .5, 1, color="green", width=0.1, head_width=0.5, length_includes_head=True)
+
+x10 = [30, 42, 54]
+y10 = [54, 42, 36]
+spl2 = make_interp_spline(x10, y10, k=2)
+xs2 = np.linspace(30, 54, 102)
+ys2 = spl2(xs2)
+plt.plot(xs2, ys2, color="green", linestyle="dotted")
+plt.arrow(52.5, 36.375, .5, -.25, color="green", width=0.1, head_width=0.5, length_includes_head=True)
+
+x10 = [36, 42, 54]
+y10 = [18, 30, 42]
+spl2 = make_interp_spline(x10, y10, k=2)
+xs2 = np.linspace(36, 54, 102)
+ys2 = spl2(xs2)
+plt.plot(xs2, ys2, color="green", linestyle="dotted")
+plt.arrow(37-0.1275, 20, -.5, -1, color="green", width=0.1, head_width=0.5, length_includes_head=True)
+
+# Add dotted lightblue line for stopbar
+plt.plot([0, 72], [30, 30], linestyle='dotted', color='lightblue')
+plt.plot([0, 72], [42, 42], linestyle='dotted', color='lightblue')
+plt.plot([30, 30], [0, 72], linestyle='dotted', color='lightblue')
+plt.plot([42, 42], [0, 72], linestyle='dotted', color='lightblue')
+
+
 # Symbols being added to the plot
 def getImage(path):
     return OffsetImage(plt.imread(path, format="jpg"), zoom=.1)
 
 paths = Symbol_Map.file_list
 
-x = []
-y = []
-for symbol in paths:
-    x.append(random.uniform(0, 72))
-    y.append(random.uniform(24, 48))
+x = [30, 36, 42, 42, 18, 24, 30, 34, 38, 42, 54, 36, 30, 42, 18, 32, 36, 40, 54, 30, 42, 36, 18, 30, 34, 38, 42, 48, 54, 30, 30, 36, 42]
+y = [54, 54, 54, 48, 42, 42, 42, 42, 42, 42, 42, 40, 38, 38, 36, 36, 36, 36, 36, 34, 34, 32, 30, 30, 30, 30, 30, 30, 30, 24, 18, 18, 18]
 
+node_num = 1
 for x0, y0, path in zip(x, y, paths):
+    
     ab = AnnotationBbox(getImage(path), (x0, y0), frameon=False)
     plt.gca().add_artist(ab)
+    plt.text(x0, y0-1.75, str(node_num), color='black', ha='center', va='center', fontsize=10, weight='bold') # add weight='bold' parameter to make the number bold
+    node_num = node_num + 1
 
 plt.legend()
 plt.xticks(np.arange(0, 84, 12))
 plt.yticks(np.arange(0, 84, 12))
 plt.axis('equal')
 
+
 plt.show()
 
 
-# Tasks:
-# 1) Connect Eric's data to Rishi's code.
-# 2.5) Rishi should clean up symbology to make sure nothin is printed extra. For example, pedestrian crash locations should always be plotted manually.
-
-# 2) Either hardcode location that have single crash point based on indivudual crash type or add bezier.
-
-# 3) Make a counter that keeps track of the amount of each type of crash in the 33 different nodes. Should plot onto map only the most common occuring crash. If there is a tie select one of the highest randomly.
-# 4) Eric should search through his data for crash types with multliple locations and store that in a seperate data file to give to traffic engineers to manually plot. Only allowed data should be plotted.
-
-# 5) Test crash diagram on 20 single lane 2 roads intersections. Obtain accuracy first and then time reduction percentage.
-
-# 6) Rishi sets up system to allow traffic engineers to manually input data locatation when needed.
 
 
-# Point of tool: Shows the most common crashes occuring at certain parts of the intersection.
+# for symbol in paths:
+#     x.append(random.uniform(0, 72))
+#     y.append(random.uniform(24, 48))
 
 
 
-# Stopped is not there. 
+# z = [30, 36, 42, 42, 18, 24, 30, 34, 38, 42, 54, 36, 30, 42, 18, 32, 36, 40, 54, 30, 42, 36, 18, 30, 34, 38, 42, 48, 54, 30, 30, 36, 42]
+# w = [54, 54, 54, 48, 42, 42, 42, 42, 42, 42, 42, 40, 38, 38, 36, 36, 36, 36, 36, 34, 34, 32, 30, 30, 30, 30, 30, 30, 30, 24, 18, 18, 18]
+# for i, (z0, w0, path) in enumerate(zip(z, w, paths)):
+#     plt.plot(z0, w0, 'go', markersize=15) # set markersize to increase the size of the circle
+#     plt.text(z0, w0, str(i+1), color='white', ha='center', va='center', fontsize=12) # set fontsize to change the size of the number, ha and va to center align the text
