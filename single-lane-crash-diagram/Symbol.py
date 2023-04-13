@@ -462,6 +462,13 @@ class Symbol_Map:
                 symbol_list[0]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
             data_counter[0] = data_counter[0] + 1
 
+        if (sublist == ['North', 'Straight', 'West', 'Turning Right', False, False, False] or
+            sublist == ['West', 'Turning Right', 'East', 'Turning Left', False, False, False]
+        ):
+            if max_counter[2] < max_count:
+                max_counter[2] = max_count
+                symbol_list[2]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[2] = data_counter[2] + 1
 
         if (sublist == ['North', 'Straight', 'East', 'Turning Left', False, False, False]):
             if max_counter[3] < max_count:
@@ -469,12 +476,27 @@ class Symbol_Map:
                 symbol_list[3]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
             data_counter[3] = data_counter[3] + 1
 
+        if (sublist == ['West', 'Straight', 'South', 'Turning Right', False, False, False] or
+            sublist == ['South', 'Turning Right', 'North', 'Turning Left', False, False, False]
+        ):
+            if max_counter[4] < max_count:
+                max_counter[4] = max_count
+                symbol_list[4]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[4] = data_counter[4] + 1
 
         if (sublist == ['West', 'Straight', 'North', 'Turning Left', False, False, False]):
             if max_counter[5] < max_count:
                 max_counter[5] = max_count
                 symbol_list[5]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
             data_counter[5] = data_counter[5] + 1
+
+        if (sublist == ['West', 'Straight', 'South', 'Straight', False, False, False] or
+            sublist == ['South', 'Straight', 'West', 'Straight', False, False, False]
+        ):
+            if max_counter[6] < max_count:
+                max_counter[6] = max_count
+                symbol_list[6]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[6] = data_counter[6] + 1
 
         if (sublist == ['West', 'Straight', 'South', 'Turning Left', False, False, False]):
             if max_counter[7] < max_count:
@@ -512,6 +534,14 @@ class Symbol_Map:
                 symbol_list[10]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
             data_counter[10] = data_counter[10] + 1
 
+        if (sublist == ['East', 'Turning Left', 'South', 'Turning Left', False, False, False] or
+            sublist == ['South', 'Turning Left', 'East', 'Turning Left', False, False, False]
+        ):
+            if max_counter[11] < max_count:
+                max_counter[11] = max_count
+                symbol_list[11]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[11] = data_counter[11] + 1
+
         if (sublist == ['South', 'Straight', 'North', 'Turning Left', False, False, False]):
             if max_counter[12] < max_count:
                 max_counter[12] = max_count
@@ -530,6 +560,30 @@ class Symbol_Map:
                 symbol_list[14]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
             data_counter[14] = data_counter[14] + 1
 
+        if (sublist == ['North', 'Turning Left', 'East', 'Turning Left', False, False, False] or
+            sublist == ['East', 'Turning Left', 'North', 'Turning Left', False, False, False]
+        ):
+            if max_counter[15] < max_count:
+                max_counter[15] = max_count
+                symbol_list[15]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[15] = data_counter[15] + 1
+
+        if (sublist == ['South', 'Turning Left', 'West', 'Turning Left', False, False, False] or
+            sublist == ['West', 'Turning Left', 'South', 'Turning Left', False, False, False]
+        ):
+            if max_counter[17] < max_count:
+                max_counter[17] = max_count
+                symbol_list[17]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[17] = data_counter[17] + 1
+
+        if (sublist == ['East', 'Straight', 'West', 'Straight', False, False, False] or
+            sublist == ['West', 'Straight', 'North', 'Turning Right', False, False, False]
+        ):
+            if max_counter[18] < max_count:
+                max_counter[18] = max_count
+                symbol_list[18]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[18] = data_counter[18] + 1
+
         if (sublist == ['South', 'Straight', 'East', 'Turning Left', False, False, False]):
             if max_counter[19] < max_count:
                 max_counter[19] = max_count
@@ -541,6 +595,14 @@ class Symbol_Map:
                 max_counter[20] = max_count
                 symbol_list[20]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
             data_counter[20] = data_counter[20] + 1
+        
+        if (sublist == ['North', 'Turning Left', 'West', 'Turning Left', False, False, False] or
+            sublist == ['West', 'Turning Left', 'North', 'Turning Left', False, False, False]
+        ):
+            if max_counter[21] < max_count:
+                max_counter[21] = max_count
+                symbol_list[21]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[21] = data_counter[21] + 1
 
         if (sublist == ['East', 'Stopped', 'South', 'Turning Left', False, False, False] or
             sublist == ['East', 'Stopped', 'South', 'Turning Right', False, False, False] or
@@ -557,6 +619,14 @@ class Symbol_Map:
                 max_counter[22] = max_count
                 symbol_list[22]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
             data_counter[22] = data_counter[22] + 1
+
+        if (sublist == ['East', 'Straight', 'South', 'Straight', False, False, False] or
+            sublist == ['South', 'Straight', 'East', 'Straight', False, False, False]
+        ):
+            if max_counter[23] < max_count:
+                max_counter[23] = max_count
+                symbol_list[23]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[23] = data_counter[23] + 1
             
         if (sublist == ['East', 'Straight', 'West', 'Turning Left', False, False, False]):
             if max_counter[24] < max_count:
@@ -583,12 +653,28 @@ class Symbol_Map:
                 max_counter[27] = max_count
                 symbol_list[27]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
             data_counter[27] = data_counter[27] + 1
+        
+        if (sublist == ['North', 'Turning Right', 'South', 'Turning Left', False, False, False] or 
+            sublist == ['East', 'Straight', 'North', 'Turning Right', False, False, False]
+        ):
+            if max_counter[28] < max_count:
+                max_counter[28] = max_count
+                symbol_list[28]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[28] = data_counter[28] + 1
 
         if (sublist == ['South', 'Straight', 'West', 'Turning Left', False, False, False]):
             if max_counter[29] < max_count:
                 max_counter[29] = max_count
                 symbol_list[29]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
             data_counter[29] = data_counter[29] + 1
+
+        if (sublist == ['South', 'Straight', 'East', 'Turning Right', False, False, False] or 
+            sublist == ['East', 'Turning Right', 'West', 'Turning Left', False, False, False]
+        ):
+            if max_counter[30] < max_count:
+                max_counter[30] = max_count
+                symbol_list[30]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5],sublist[6])
+            data_counter[30] = data_counter[30] + 1
         
         if (sublist == ['North', 'Straight', 'East', 'Turning Right', False, False, False]):
             if max_counter[31] < max_count:
