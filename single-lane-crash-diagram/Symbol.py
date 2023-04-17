@@ -10,9 +10,7 @@ import matplotlib.image as mpimg
 import matplotlib.cm as cm
 import os
 
-# sublist == ['West', 'Straight', 'West', 'Straight', True, False]
 
-# Grouping Approach
 class Symbol:
     def __init__(self, v1direction, v1manuever, v2direction, v2manuever, side_swipe, stationary_present):
         self.v1manuever = v1manuever
@@ -475,8 +473,61 @@ class Symbol_Map:
     max_counter = np.zeros(33)
     max_counter = data_counter.astype(int)
     total_crashes = 0
-
+    trajectories =[]
     for sublist in data_cleaner(file, center):
+
+        if ((sublist[1] != "Straight") and (sublist[1] == sublist[3])and (sublist[0] == sublist[2])):
+            if (sublist[0] == "North" and sublist[1] == "Turning Left"):
+                string = "Short North-Turning Left"
+            if (sublist[0] == "South" and sublist[1] == "Turning Left"):
+                string = "Short South-Turning Left"
+            if (sublist[0] == "West" and sublist[1] == "Turning Left"):
+                string = "Short West-Turning Left"
+            if (sublist[0] == "East" and sublist[1] == "Turning Left"):
+                string = "Short East-Turning Left"
+        else:   
+            if (sublist[0] == "North" and sublist[1] == "Straight") or (sublist[2] == "North" and sublist[3] == "Straight"):
+                string = "North-Straight"
+            if (sublist[0] == "South" and sublist[1] == "Straight") or (sublist[2] == "South" and sublist[3] == "Straight"):
+                string = "South-Straight"
+            if (sublist[0] == "West" and sublist[1] == "Straight") or (sublist[2] == "West" and sublist[3] == "Straight"):
+                string = "West-Straight"
+            if (sublist[0] == "East" and sublist[1] == "Straight") or (sublist[2] == "East" and sublist[3] == "Straight"):
+                string = "East-Straight"
+
+            if (sublist[0] == "North" and sublist[1] == "Turning Left") or (sublist[2] == "North" and sublist[3] == "Turning Left"):
+                string = "Long North-Turning Left"
+            if (sublist[0] == "South" and sublist[1] == "Turning Left") or (sublist[2] == "South" and sublist[3] == "Turning Left"):
+                string = "Long South-Turning Left"
+            if (sublist[0] == "West" and sublist[1] == "Turning Left") or (sublist[2] == "West" and sublist[3] == "Turning Left"):
+                string = "Long West-Turning Left"
+            if (sublist[0] == "East" and sublist[1] == "Turning Left") or (sublist[2] == "East" and sublist[3] == "Turning Left"):
+                string = "Long East-Turning Left"
+
+            if (sublist[0] == "North" and sublist[1] == "Turning Right") or (sublist[2] == "North" and sublist[3] == "Turning Right"):
+                string = "North-Turning Right"
+            if (sublist[0] == "South" and sublist[1] == "Turning Right") or (sublist[2] == "South" and sublist[3] == "Turning Right"):
+                string = "South-Turning Right"
+            if (sublist[0] == "West" and sublist[1] == "Turning Right") or (sublist[2] == "West" and sublist[3] == "Turning Right"):
+                string = "West-Turning Right"
+            if (sublist[0] == "East" and sublist[1] == "Turning Right") or (sublist[2] == "East" and sublist[3] == "Turning Right"):
+                string = "East-Turning Right"
+
+        if string not in trajectories:
+            trajectories.append(string)
+
+
+
+
+
+
+
+
+
+
+
+
+
         max_count = 0
         total_crashes = total_crashes + 1
         for sublist2 in data_cleaner(file, center):
@@ -523,8 +574,9 @@ class Symbol_Map:
                 symbol_list[3]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5])
             data_counter[3] = data_counter[3] + 1
 
-        if (sublist == ['West', 'Straight', 'South', 'Turning Right', False, False] or
-            sublist == ['South', 'Turning Right', 'North', 'Turning Left', False, False]
+        if (
+            sublist == ['West', 'Straight', 'South', 'Turning Right', False, False] or
+            sublist == ['South', 'Turning Right', 'North', 'Turning Left', False, False] 
         ):
             if max_counter[4] < max_count:
                 max_counter[4] = max_count
@@ -540,7 +592,8 @@ class Symbol_Map:
             data_counter[5] = data_counter[5] + 1
 
         if (sublist == ['West', 'Straight', 'South', 'Straight', False, False] or
-            sublist == ['South', 'Straight', 'West', 'Straight', False, False]
+            sublist == ['South', 'Straight', 'West', 'Straight', False, False] or
+            sublist == ['South', 'Turning Right', 'East', 'Turning Left', False, False]
         ):
             if max_counter[6] < max_count:
                 max_counter[6] = max_count
@@ -560,7 +613,8 @@ class Symbol_Map:
             data_counter[8] = data_counter[8] + 1
 
         if (sublist ==  ['North', 'Straight', 'West', 'Straight', False, False] or
-             sublist ==  ['West', 'Straight', 'North', 'Straight', False, False]
+             sublist ==  ['West', 'Straight', 'North', 'Straight', False, False] or
+             sublist == ['West', 'Turning Right', 'South', 'Turning Left', False, False]
         ):
             if max_counter[9] < max_count:
                 max_counter[9] = max_count
@@ -622,6 +676,33 @@ class Symbol_Map:
                 symbol_list[15]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5])
             data_counter[15] = data_counter[15] + 1
 
+        if (
+            sublist == ['East', 'Turning Left', 'West', 'Turning Left', False, False] or
+            sublist == ['West', 'Turning Left', 'East', 'Turning Left', False, False] or
+            sublist == ['North', 'Turning Left', 'South', 'Turning Left', False, False] or
+            sublist == ['South', 'Turning Left', 'North', 'Turning Left', False, False] or
+
+            sublist == ['South', 'Turning Right', 'North', 'Turning Right', False, False] or
+            sublist == ['West', 'Turning Right', 'East', 'Turning Right', False, False] or
+            sublist == ['East', 'Turning Right', 'West', 'Turning Right', False, False] or
+            sublist == ['North', 'Turning Right', 'South', 'Turning Right', False, False] or
+
+            sublist == ['South', 'Straight', 'North', 'Straight', False, False] or
+            sublist == ['West', 'Straight', 'East', 'Straight', False, False] or
+            sublist == ['East', 'Straight', 'West', 'Straight', False, False] or
+            sublist == ['North', 'Straight', 'South', 'Straight', False, False] or
+
+            sublist == ['South', 'Straight', 'North', 'Straight', True, False] or
+            sublist == ['West', 'Straight', 'East', 'Straight', True, False] or
+            sublist == ['East', 'Straight', 'West', 'Straight', True, False] or
+            sublist == ['North', 'Straight', 'South', 'Straight', True, False]   
+        ):
+            if max_counter[16] < max_count:
+                max_counter[16] = max_count
+                symbol_list[16]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5])
+            data_counter[16] = data_counter[16] + 1
+
+
         if (sublist == ['South', 'Turning Left', 'West', 'Turning Left', False, False] or
             sublist == ['West', 'Turning Left', 'South', 'Turning Left', False, False]
         ):
@@ -630,8 +711,7 @@ class Symbol_Map:
                 symbol_list[17]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5])
             data_counter[17] = data_counter[17] + 1
 
-        if (sublist == ['East', 'Straight', 'West', 'Straight', False, False] or
-            sublist == ['West', 'Straight', 'North', 'Turning Right', False, False] or
+        if (sublist == ['West', 'Straight', 'North', 'Turning Right', False, False] or
 
             sublist == ['South', 'Turning Left', 'South', 'Turning Left', True, False]
         ):
@@ -679,7 +759,8 @@ class Symbol_Map:
             data_counter[22] = data_counter[22] + 1
 
         if (sublist == ['East', 'Straight', 'South', 'Straight', False, False] or
-            sublist == ['South', 'Straight', 'East', 'Straight', False, False]
+            sublist == ['South', 'Straight', 'East', 'Straight', False, False] or
+            sublist == ['East', 'Turning Right', 'West', 'Turning Left', True, False]    
         ):
             if max_counter[23] < max_count:
                 max_counter[23] = max_count
@@ -699,7 +780,8 @@ class Symbol_Map:
             data_counter[25] = data_counter[25] + 1
             
         if (sublist ==  ['North', 'Straight', 'East', 'Straight', False, False] or
-             sublist ==  ['East', 'Straight', 'North', 'Straight', False, False]
+             sublist ==  ['East', 'Straight', 'North', 'Straight', False, False] or
+             sublist == ['North', 'Turning Right', 'West', 'Turning Left', False, False]
         ):
             if max_counter[26] < max_count:
                 max_counter[26] = max_count
@@ -763,7 +845,17 @@ class Symbol_Map:
                 max_counter[32] = max_count
                 symbol_list[32]  = Symbol(sublist[0],sublist[1],sublist[2],sublist[3],sublist[4],sublist[5])
             data_counter[32] = data_counter[32] + 1
+    print (trajectories)
+    print(len(trajectories))
     total_crashes_plotted = sum(data_counter)
+
+
+
+
+
+
+
+
 
     folder_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -790,9 +882,8 @@ class Symbol_Map:
         file_list.append(png_string)
         symbolCount += 1
 
-    # print (max_counter)
-    # print (data_counter)
+    print (max_counter)
+    print (data_counter)
     
-    # print(total_crashes_plotted)
-    # print(total_crashes)
-
+    print(total_crashes_plotted)
+    print(total_crashes)
